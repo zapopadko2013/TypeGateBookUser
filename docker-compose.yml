@@ -1,0 +1,64 @@
+version: '3.7'
+
+services:
+  api-gateway:
+    build:
+      context: ./backend/ApiGateway
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - ./backend/ApiGateway/.env
+    depends_on:
+      - rabbitmq
+      - postgres
+
+  books-service:
+    build:
+      context: ./backend/BookService
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - ./backend/BookService/.env
+    depends_on:
+      - rabbitmq
+      - postgres
+
+  users-service:
+    build:
+      context: ./backend/UserService
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - ./backend/UserService/.env
+    depends_on:
+      - rabbitmq
+      - postgres 
+
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: bookstore
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "15672:15672" # Web UI RabbitMQ
+      - "5672:5672"   # RabbitMQ Port
+
+  # Опционально, сервис для миграций базы данных
+  migrate-db:
+    image: node:16-alpine
+    working_dir: /app
+    command: npm run migrate
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend:/app
