@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
+import { User } from './entities/User';
 
 config();
 
@@ -11,7 +12,7 @@ export = {
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || '1',
   database: process.env.DB_NAME || 'users',
-  entities: ['src/entities/*.ts'],
+  entities: [User], 
   synchronize: process.env.TYPEORM_SYNCHRONIZE === 'true',
 
 

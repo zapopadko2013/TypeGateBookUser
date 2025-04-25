@@ -12,7 +12,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || '1',
   database: process.env.DB_NAME || 'users',
-  entities: ['src/entities/*.ts'],
+  entities: [User], 
   synchronize: process.env.TYPEORM_SYNCHRONIZE === 'true',
   logging: process.env.TYPEORM_LOGGING ==='false',
 

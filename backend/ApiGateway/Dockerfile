@@ -1,5 +1,5 @@
 # Используем официальный Node.js образ
-FROM node:16-alpine
+FROM node:18-alpine
 
 # Рабочая директория внутри контейнера
 WORKDIR /app

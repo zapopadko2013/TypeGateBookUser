@@ -16,6 +16,8 @@ export const startConsumer = async () => {
   ch.consume(Queue, async (msg) => {
     if (!msg) return;
 
+    console.log(msg.content.toString());
+    
     try {
     const payload = JSON.parse(msg.content.toString());
     const { oper, body } = payload;

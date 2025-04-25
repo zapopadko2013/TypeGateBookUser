@@ -25,9 +25,15 @@ type Book = {
 
 export const bookResolvers: IResolvers = {
   Query: {
-    getBooksList: () => sendToQueue(QueueBook, { oper: 'getBooks', body: {} }),
-    getBookById: (_: unknown, { id }: { id: number }) =>
-      sendToQueue(QueueBook, { oper: 'getBook', body: { id } }),
+   // getBooksList: async() => await sendToQueue(QueueBook, { oper: 'getBooks', body: {} }),
+   getBooksList: async() => 
+    {
+     const result = await sendToQueue('books', { oper: 'getBooks', body: {} });
+     console.log('Books List Result:', result);
+     return result;
+   },
+    getBookById: async(_: unknown, { id }: { id: number }) =>
+      await sendToQueue(QueueBook, { oper: 'getBook', body: { id } }),
   },
 
   Mutation: {
@@ -64,7 +70,7 @@ export const bookResolvers: IResolvers = {
 
   Book: {
     author: async (book: { author_id: number }) => {
-      return sendToQueue(QueueUser, { oper: 'me', body: { id: book.author_id } });
+      return await sendToQueue(QueueUser, { oper: 'me', body: { id: book.author_id } });
     },
   },
 };

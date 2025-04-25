@@ -12,7 +12,7 @@ services:
       - ./backend/ApiGateway/.env
     depends_on:
       - rabbitmq
-      - postgres
+      
 
   books-service:
     build:
@@ -23,7 +23,7 @@ services:
       - ./backend/BookService/.env
     depends_on:
       - rabbitmq
-      - postgres
+      - postgres-books
 
   users-service:
     build:
@@ -34,18 +34,27 @@ services:
       - ./backend/UserService/.env
     depends_on:
       - rabbitmq
-      - postgres 
+      - postgres-users
+      
 
-  postgres:
-    image: postgres:13-alpine
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: bookstore
-    volumes:
-      - ./postgres-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+  
+  postgres-books:
+   image: postgres:13-alpine
+   environment:
+    POSTGRES_USER: book_user
+    POSTGRES_PASSWORD: password
+    POSTGRES_DB: booksdb
+   ports:
+    - "5433:5432"
+
+  postgres-users:
+   image: postgres:13-alpine
+   environment:
+    POSTGRES_USER: user_user
+    POSTGRES_PASSWORD: password
+    POSTGRES_DB: usersdb
+   ports:
+    - "5434:5432"
 
   rabbitmq:
     image: "rabbitmq:3-management"
@@ -53,12 +62,4 @@ services:
       - "15672:15672" # Web UI RabbitMQ
       - "5672:5672"   # RabbitMQ Port
 
-  # Опционально, сервис для миграций базы данных
-  migrate-db:
-    image: node:16-alpine
-    working_dir: /app
-    command: npm run migrate
-    depends_on:
-      - postgres
-    volumes:
-      - ./backend:/app
+ 
